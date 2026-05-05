@@ -17,6 +17,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Sydney
 
+## Source 3: FRED CPI Data
 
-## Source 3:
+# Annie
+
+## Source 4: BLS OES Wage/Employment Data
+
+# Cam
 
