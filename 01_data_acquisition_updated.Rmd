@@ -30,7 +30,7 @@ head(test_data)
 
 
 Pulling the 2010 vs 2022 Data
-For your project, we need two "snapshots" to compare. We will pull the Median Earnings for the 25–34 age group (this is the closest standard bracket to your 22–34 target).
+For your project, we need two "snapshots" to compare. We will pull the Median Earnings for the 25–34 age group.
 
 ```{r}
 # This creates a searchable list of all 2022 ACS variables
@@ -104,6 +104,8 @@ It's going to take those 2010 numbers and say: "If this Alabama worker wanted to
 
 ```{r}
 library(fredr)
+library(tidyverse)
+library(lubridate)
 
 # 1. Set your FRED key (from your secret file)
 fredr_set_key(Sys.getenv("FRED_API_KEY"))
