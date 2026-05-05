@@ -42,12 +42,12 @@ View(v22)
 
 
 Inflation 
-A dollar in 2010 bought a lot more than a dollar does in 2026. To answer if workers are "worse off," we have to adjust the 2010 wages.This is where your FRED API comes in. In your next script, we will pull the Consumer Price Index (CPI) to calculate the "Real" value of those 2010 wages using this formula:$$\text{Real Wage}_{2010} = \text{Nominal Wage}_{2010} \times \left( \frac{\text{CPI}_{2026}}{\text{CPI}_{2010}} \right)$$
+A dollar in 2010 bought a lot more than a dollar does in 2026. To answer if workers are "worse off," we have to adjust the 2010 wages.This is where the FRED API comes in. In our next script, we will pull the Consumer Price Index (CPI) to calculate the "Real" value of those 2010 wages using this formula:$$\text{Real Wage}_{2010} = \text{Nominal Wage}_{2010} \times \left( \frac{\text{CPI}_{2026}}{\text{CPI}_{2010}} \right)$$
 
 
 
 Finding the "Age" Variables
-In the Census, "Median Earnings" by specific age brackets isn't always in table B20017. A better table for your project is usually B19049 (Median Household Income by Age of Householder) or searching for individual earnings specifically for those age groups.
+In the Census, "Median Earnings" by specific age brackets isn't always in table B20017. The better table for this project is likely B19049 (Median Household Income by Age of Householder) or searching for individual earnings specifically for those age groups.
 
 ```{r}
 # This creates a searchable list of all 2022 ACS variables
