@@ -12,10 +12,44 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Source 1: Census ACS Income (25-44)
 
 # Sydney
+```{r}
+library(tidycensus)
+library(tidyverse)
+
+# Load the list of all available variables for 2024
+v24 <- load_variables(2024, "acs1", cache = TRUE)
+
+# Use RStudio's View to search keywords like "age", "income", or "rent"
+View(v24)
+Sys.getenv("CENSUS_API_KEY")
+
+income_vars <- c(income_25_through_44 = "B19049_003")
+
+income_2010 <- get_acs(geography = "state", variables = income_vars, year = 2010, survey = "acs1")
+income_2010$year <- 2010
+
+income_2024 <- get_acs(geography = "state", variables = income_vars, year = 2024, survey = "acs1")
+income_2024$year <- 2024
+
+income_combined <- rbind(income_2010, income_2024)
+income_final <- pivot_wider(income_combined, id_cols = NAME, names_from = year, names_prefix = "income_", values_from = estimate)
+```
+
 
 ## Source 2: Census ACS Rent Data (25-44)
 
 # Sydney
+```{r}
+rent_vars = c(median_rent ="B25064_001")
+rent_2010 <- get_acs(geography = "state", variables = rent_vars, year = 2010, survey = "acs1")
+rent_2010$year <- 2010
+rent_2024 <- get_acs(geography = "state", variables = rent_vars, year = 2024, survey = "acs1")
+rent_2024$year <- 2024
+
+rent_combined <- rbind(rent_2010, rent_2024)
+
+rent_final <- pivot_wider(rent_combined, id_cols = NAME, names_from = year, names_prefix = "rent_", values_from = estimate)
+```
 
 ## Source 3: FRED CPI Data
 
