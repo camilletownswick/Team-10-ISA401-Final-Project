@@ -1,6 +1,6 @@
 ---
 title: "first script"
-author: "Annie Freeman"
+author: "Annie Freeman & Team 10"
 date: "2026-05-04"
 output: html_document
 ---
