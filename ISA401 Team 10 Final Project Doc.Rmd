@@ -114,7 +114,7 @@ ggplot(cpi_data, aes(x = date, y = price)) +
 ```
 
 
-The CPI data from FRED was acquired through API access using the `tidyquant` package. It was used to calculate an inflation adjustment factor so 2010 dollar values can be compared fairly with 2024 dollar values.
+The CPI trend shows that prices increased substantially between 2010 and 2024, with a sharp rise occurring after 2020. This supports the need to adjust earlier income and rent values for inflation before making affordability comparisons across years.
 
 ## Source 4: BLS OES Wage/Employment Data
 
