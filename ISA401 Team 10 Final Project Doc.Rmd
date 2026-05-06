@@ -111,12 +111,20 @@ ggplot(cpi_data, aes(x = date, y = price)) +
 ```
 
 
+
+
+
+
+
+
+
 The CPI trend shows that prices increased substantially between 2010 and 2024, with a sharp rise occurring after 2020. This supports the need to adjust earlier income and rent values for inflation before making affordability comparisons across years.
 
 ## Source 4: MIT Living Wage Calculator
 
 # Cam
 
+<<<<<<< HEAD
 # Working on scraping all 50 states efficiently
 
 ```{r}
@@ -153,9 +161,4 @@ all_tables <- page |>
 View(all_tables[[1]])
 View(all_tables[[2]])
 View(all_tables[[3]])
-
-
 ```
-
-
-
