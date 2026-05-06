@@ -36,6 +36,19 @@ income_final <- pivot_wider(income_combined, id_cols = NAME, names_from = year, 
 ```
 
 
+```{r}
+library(ggplot2)
+
+ggplot(cpi_data, aes(x = date, y = price)) +
+  geom_line() +
+  labs(title = "Consumer Price Index (CPI) Over Time",
+       x = "Year",
+       y = "CPI") +
+  theme_minimal()
+```
+
+
+
 ## Source 2: Census ACS Rent Data (25-44)
 
 # Sydney
@@ -56,14 +69,19 @@ rent_final <- pivot_wider(rent_combined, id_cols = NAME, names_from = year, name
 # Annie
 # Annie
 ux
-```{r}
-install.packages("tidyquant")
-```
+## Source 3: FRED CPI Data
 
+# Annie
+
+
+
+
+## Source 3: FRED CPI Data
+
+# Annie
 ```{r}
 library(tidyverse)
 library(tidyquant)
-library(lubridate)
 
 # Pull CPI data from FRED
 # CPIAUCSL = Consumer Price Index for All Urban Consumers
@@ -72,28 +90,40 @@ cpi_data <- tq_get("CPIAUCSL",
                    from = "2010-01-01",
                    to = "2024-12-31")
 
-# Keep only 2010 and 2024, then calculate average CPI for each year
-cpi_final <- cpi_data %>%
-  mutate(year = year(date)) %>%
-  filter(year %in% c(2010, 2024)) %>%
-  group_by(year) %>%
-  summarize(avg_cpi = mean(price, na.rm = TRUE)) %>%
-  pivot_wider(names_from = year,
-              names_prefix = "cpi_",
-              values_from = avg_cpi)
+# Add a year column
+cpi_data$year <- format(cpi_data$date, "%Y")
 
-cpi_final
+# Calculate average CPI for 2010
+cpi_2010 <- cpi_data %>%
+  filter(year == "2010") %>%
+  summarize(cpi = mean(price, na.rm = TRUE))
+
+cpi_2010$year <- 2010
+
+# Calculate average CPI for 2024
+cpi_2024 <- cpi_data %>%
+  filter(year == "2024") %>%
+  summarize(cpi = mean(price, na.rm = TRUE))
+
+cpi_2024$year <- 2024
+
+# Combine 2010 and 2024 CPI data
+cpi_combined <- rbind(cpi_2010, cpi_2024)
+
+# Reshape data so 2010 and 2024 CPI values are side by side
+cpi_final <- pivot_wider(cpi_combined,
+                         names_from = year,
+                         names_prefix = "cpi_",
+                         values_from = cpi)
 
 # Create inflation factor to adjust 2010 dollars into 2024 dollars
 inflation_factor <- cpi_final$cpi_2024 / cpi_final$cpi_2010
 
+cpi_final
 inflation_factor
 ```
 
-
-The CPI data from FRED was used to calculate an inflation adjustment factor of 1.43848. This means 2010 dollar values can be multiplied by 1.43848 to compare them fairly with 2024 dollar values.
-
-
+The CPI data from FRED was acquired through API access using the `tidyquant` package. It was used to calculate an inflation adjustment factor so 2010 dollar values can be compared fairly with 2024 dollar values.
 
 ## Source 4: BLS OES Wage/Employment Data
 
