@@ -21,7 +21,6 @@ v24 <- load_variables(2024, "acs1", cache = TRUE)
 
 # Use RStudio's View to search keywords like "age", "income", or "rent"
 View(v24)
-Sys.getenv("CENSUS_API_KEY")
 
 income_vars <- c(income_25_through_44 = "B19049_003")
 
