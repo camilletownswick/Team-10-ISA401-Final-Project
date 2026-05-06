@@ -120,53 +120,8 @@ ggplot(cpi_data, aes(x = date, y = price)) +
 
 The CPI trend shows that prices increased substantially between 2010 and 2024, with a sharp rise occurring after 2020. This supports the need to adjust earlier income and rent values for inflation before making affordability comparisons across years.
 
-## Source 4: BLS OES Wage/Employment Data
+## Source 4: MIT Living Wage Calculator
 
 # Cam
-
-# Final Combined Dataset
-
-```{r}
-library(rvest)
-library(tidyverse)
-
-url <- "https://livingwage.mit.edu/states/39"
-
-page <- read_html(url)
-
-tables <- page %>%
-  html_table(fill = TRUE)
-
-tables
-```
-```{r}
-tables[[1]]
-```
-
-```{r}
-ohio_living_wage <- tables[[1]]
-
-ohio_living_wage
-```
-
-
-```{r}
-living_wage_clean <- ohio_living_wage[, 1:2]
-
-colnames(living_wage_clean) <- c("category", "wage")
-
-living_wage_clean
-```
-
-
-
-
-
-
-
-
-
-
-
 
 
