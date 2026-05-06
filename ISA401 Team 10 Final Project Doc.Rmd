@@ -21,7 +21,7 @@ v24 <- load_variables(2024, "acs1", cache = TRUE)
 
 # Use RStudio's View to search keywords like "age", "income", or "rent"
 View(v24)
-Sys.getenv("CENSUS_API_KEY")
+
 
 income_vars <- c(income_25_through_44 = "B19049_003")
 
@@ -34,9 +34,6 @@ income_2024$year <- 2024
 income_combined <- rbind(income_2010, income_2024)
 income_final <- pivot_wider(income_combined, id_cols = NAME, names_from = year, names_prefix = "income_", values_from = estimate)
 ```
-
-
-
 
 
 ## Source 2: Census ACS Rent Data (25-44)
