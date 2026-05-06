@@ -117,9 +117,28 @@ The CPI trend shows that prices increased substantially between 2010 and 2024, w
 
 # Cam
 
+# Working on scraping all 50 states efficiently
 
 ```{r}
+# Check if allowed to scrape
+robotstxt::paths_allowed(
+  paths= "/emp/",
+  domain = "https://livingwage.mit.edu"
+  )
 
+# Check specific webpage
+robotstxt::paths_allowed(
+  paths = "https://livingwage.mit.edu/states/01",
+)
+
+# mit_webpage <- resp |> httr2::resp_body_raw() |> rvest::read_html() 
+
+# Step 1: Read
+page <- rvest::read_html("https://livingwage.mit.edu/states/01")
+# Step 2: Select
+nodes <- page |> rvest::html_elements(".container")
+# Step 3: Extract
+data  <- nodes |> rvest::html_text2()
 ```
 
 
