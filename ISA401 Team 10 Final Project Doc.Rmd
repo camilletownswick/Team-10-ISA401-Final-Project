@@ -120,5 +120,48 @@ The CPI trend shows that prices increased substantially between 2010 and 2024, w
 
 # Cam
 
+```{r}
+rent_vars <- c(median_rent = "B25064_001")
+
+rent_2010 <- get_acs(geography = "state", variables = rent_vars, year = 2010, survey = "acs1")
+rent_2010$year <- 2010
+
+rent_2024 <- get_acs(geography = "state", variables = rent_vars, year = 2024, survey = "acs1")
+rent_2024$year <- 2024
+
+rent_combined <- rbind(rent_2010, rent_2024)
+
+rent_final <- pivot_wider(
+  rent_combined,
+  id_cols = NAME,
+  names_from = year,
+  names_prefix = "rent_",
+  values_from = estimate
+)
+```
+
+
+
+```{r}
+## Final Combined Dataset
+
+combined_data <- income_final %>%
+  left_join(rent_final, by = "NAME") %>%
+  mutate(
+    income_2010_adjusted = income_2010 * inflation_factor,
+    rent_2010_adjusted = rent_2010 * inflation_factor,
+    
+    rent_to_income_2010 = (rent_2010_adjusted * 12) / income_2010_adjusted,
+    rent_to_income_2024 = (rent_2024 * 12) / income_2024,
+    
+    change_in_affordability = rent_to_income_2024 - rent_to_income_2010
+  )
+
+head(combined_data)
+```
+
+
+
+
 
 
