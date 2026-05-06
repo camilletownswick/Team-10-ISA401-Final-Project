@@ -131,14 +131,30 @@ robotstxt::paths_allowed(
   paths = "https://livingwage.mit.edu/states/01",
 )
 
-# mit_webpage <- resp |> httr2::resp_body_raw() |> rvest::read_html() 
+library(rvest)
+library(httr2)
 
-# Step 1: Read
-page <- rvest::read_html("https://livingwage.mit.edu/states/01")
-# Step 2: Select
-nodes <- page |> rvest::html_elements(".container")
-# Step 3: Extract
-data  <- nodes |> rvest::html_text2()
+
+
+# step 1: read the page w/ a user-agent
+resp <- httr2::request("https://livingwage.mit.edu/states/01") |>
+  httr2::req_user_agent("An ISA 401 Student from Miami University") |>
+  httr2::req_perform()
+
+page <- resp |> httr2::resp_body_raw() |> rvest::read_html()
+
+
+# Pull all 3 tables at once
+all_tables <- page |>
+  rvest::html_elements("table") |>
+  rvest::html_table()
+
+# Inspect each one before building the loop
+View(all_tables[[1]])
+View(all_tables[[2]])
+View(all_tables[[3]])
+
+
 ```
 
 
