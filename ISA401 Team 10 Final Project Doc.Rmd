@@ -54,6 +54,46 @@ rent_final <- pivot_wider(rent_combined, id_cols = NAME, names_from = year, name
 ## Source 3: FRED CPI Data
 
 # Annie
+# Annie
+ux
+```{r}
+install.packages("tidyquant")
+```
+
+```{r}
+library(tidyverse)
+library(tidyquant)
+library(lubridate)
+
+# Pull CPI data from FRED
+# CPIAUCSL = Consumer Price Index for All Urban Consumers
+cpi_data <- tq_get("CPIAUCSL",
+                   get = "economic.data",
+                   from = "2010-01-01",
+                   to = "2024-12-31")
+
+# Keep only 2010 and 2024, then calculate average CPI for each year
+cpi_final <- cpi_data %>%
+  mutate(year = year(date)) %>%
+  filter(year %in% c(2010, 2024)) %>%
+  group_by(year) %>%
+  summarize(avg_cpi = mean(price, na.rm = TRUE)) %>%
+  pivot_wider(names_from = year,
+              names_prefix = "cpi_",
+              values_from = avg_cpi)
+
+cpi_final
+
+# Create inflation factor to adjust 2010 dollars into 2024 dollars
+inflation_factor <- cpi_final$cpi_2024 / cpi_final$cpi_2010
+
+inflation_factor
+```
+
+
+The CPI data from FRED was used to calculate an inflation adjustment factor of 1.43848. This means 2010 dollar values can be multiplied by 1.43848 to compare them fairly with 2024 dollar values.
+
+
 
 ## Source 4: BLS OES Wage/Employment Data
 
