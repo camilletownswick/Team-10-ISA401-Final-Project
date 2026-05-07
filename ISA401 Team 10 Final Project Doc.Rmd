@@ -52,8 +52,6 @@ rent_final <- pivot_wider(rent_combined, id_cols = NAME, names_from = year, name
 ```
 
 
-
-
 ## Source 3: FRED CPI Data
 
 # Annie
@@ -111,18 +109,13 @@ ggplot(cpi_data, aes(x = date, y = price)) +
 ```
 
 
-
-
-
-
-
 The CPI trend shows that prices increased substantially between 2010 and 2024, with a sharp rise occurring after 2020. This supports the need to adjust earlier income and rent values for inflation before making affordability comparisons across years.
 
-## Source 4: MIT Living Wage Calculator
+## Source 4: BLS OES Wage/Employment Data
 
 # Cam
 
-<<<<<<< HEAD
+
 # Working on scraping all 50 states efficiently
 
 ```{r}
@@ -182,3 +175,4 @@ living_wage_table1 <- living_wage_table1 |> left_join(state_xwalk, by = "state_f
 living_wage_table2 <- living_wage_table2 |> left_join(state_xwalk, by = "state_fips")
 living_wage_table3 <- living_wage_table3 |> left_join(state_xwalk, by = "state_fips")
 ```
+
