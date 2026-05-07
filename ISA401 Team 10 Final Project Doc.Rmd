@@ -17,14 +17,14 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidycensus)
 library(tidyverse)
 
-Sys.getenv("CENSUS_API_KEY")
 
 # Load the list of all available variables for 2024
 v24 <- load_variables(2024, "acs1", cache = TRUE)
 
 # Use RStudio's View to search keywords like "age", "income", or "rent"
-View(v24)
+# View(v24)
 
+Sys.getenv("CENSUS_API_KEY")
 
 income_vars <- c(income_25_through_44 = "B19049_003")
 
@@ -53,7 +53,6 @@ rent_combined <- rbind(rent_2010, rent_2024)
 
 rent_final <- pivot_wider(rent_combined, id_cols = NAME, names_from = year, names_prefix = "rent_", values_from = estimate)
 ```
-
 
 ## Source 3: FRED CPI Data
 
@@ -111,15 +110,6 @@ ggplot(cpi_data, aes(x = date, y = price)) +
        x = "Year",
        y = "CPI")
 ```
-
-
-
-```{r}
-income_2010_adjusted = income_2010 * inflation_factor
-rent_2010_adjusted = rent_2010 * inflation_factor
-```
-
-We are converting 2010 income and rent into 2024 dollars.
 
 
 ## Source 4: BLS OES Wage/Employment Data
@@ -187,38 +177,34 @@ living_wage_table2 <- living_wage_table2 |> left_join(state_xwalk, by = "state_f
 living_wage_table3 <- living_wage_table3 |> left_join(state_xwalk, by = "state_fips")
 ```
 
-## Merging All Sources
+## Merging Sources 1, 2, and 3
 
 ```{r}
 # Step 1: Join income and rent by state name
 merged_data <- income_final |>
   left_join(rent_final, by = "NAME")
 
-# Step 2: Add CPI inflation factor as a constant column (it's national, not by state)
+# Step 2: Add inflation factor as a constant column across all states
 merged_data$inflation_factor <- inflation_factor
 
-# Step 3: Add living wage data (table 1) by state name
-# Rename state_name in the living wage crosswalk to match "NAME" used in Census data
-living_wage_clean <- living_wage_table1 |>
-  rename(NAME = state_name)
+# Step 3: Adjust 2010 values to 2024 dollars
+merged_data$income_2010_adj <- merged_data$income_2010 * inflation_factor
+merged_data$rent_2010_adj   <- merged_data$rent_2010   * inflation_factor
 
-merged_data <- merged_data |>
-  left_join(living_wage_clean, by = "NAME")
+# Step 4: Calculate affordability ratios (annual rent / annual income)
+merged_data$afford_ratio_2010 <- (merged_data$rent_2010_adj * 12) / merged_data$income_2010_adj
+merged_data$afford_ratio_2024 <- (merged_data$rent_2024 * 12)     / merged_data$income_2024
 
-# Step 4: Adjust 2010 income and rent to 2024 dollars using inflation factor
-merged_data$income_2010_adj <- merged_data$income_2010 * merged_data$inflation_factor
-merged_data$rent_2010_adj   <- merged_data$rent_2010   * merged_data$inflation_factor
-
-# Step 5: Calculate affordability ratios (annual rent / annual income)
-# Rent is monthly, so multiply by 12 to annualize
-merged_data$afford_ratio_2010 <- (merged_data$rent_2010_adj * 12)  / merged_data$income_2010_adj
-merged_data$afford_ratio_2024 <- (merged_data$rent_2024 * 12)      / merged_data$income_2024
-
-# Step 6: Calculate change in affordability (positive = worse, negative = better)
+# Step 5: How much did affordability change per state?
 merged_data$afford_change <- merged_data$afford_ratio_2024 - merged_data$afford_ratio_2010
 
-# View the final merged dataset
 View(merged_data)
+```
+
+Once your living wage scraping is done you can add it later with one more `left_join`. For now this gives you a working merged dataset you can already start building Tableau visuals from. Save it with:
+
+```{r}
+write.csv(merged_data, "final_merged_data.csv", row.names = FALSE)
 ```
 
 A few things to note:
@@ -228,8 +214,4 @@ A few things to note:
 **`living_wage_table1`** needs to have a `state_name` column for the join to work, which it will since you added the crosswalk in Source 4. Just double-check the column names match by running `colnames(living_wage_table1)` and `colnames(income_final)` before running the merge.
 
 **This final `merged_data` is what you export to Tableau/Power BI.** You can save it with:
-
-```{r}
-write.csv(merged_data, "final_merged_data.csv", row.names = FALSE)
-```
 
