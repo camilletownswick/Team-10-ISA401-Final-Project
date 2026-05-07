@@ -109,6 +109,8 @@ inflation_factor
 Prices in 2024 are about 1.438 times what they were in 2010. Something that cost $1.00 in 2010 would cost about $1.44 in 2024. So prices increased by about 43.8% from 2010 to 2024 based on your CPI calculation.
 
 
+
+
 ```{r}
 ggplot(cpi_data, aes(x = date, y = price)) +
   geom_line() +
