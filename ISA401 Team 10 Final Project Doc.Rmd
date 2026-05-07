@@ -210,8 +210,8 @@ merged_data$afford_ratio_2024 <- (merged_data$rent_2024 * 12)     / merged_data$
 merged_data$afford_change <- merged_data$afford_ratio_2024 - merged_data$afford_ratio_2010
 
 # Save and view
-write.csv(merged_data, "final_merged_data.csv", row.names = FALSE)
 View(merged_data)
+write.csv(merged_data, "merged_data.csv", row.names = FALSE)
 ```
 
 This is cleaner, logically ordered, and all in one chunk so there's no confusion about what runs when.
