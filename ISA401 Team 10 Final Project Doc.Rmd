@@ -176,3 +176,49 @@ living_wage_table2 <- living_wage_table2 |> left_join(state_xwalk, by = "state_f
 living_wage_table3 <- living_wage_table3 |> left_join(state_xwalk, by = "state_fips")
 ```
 
+## Merging All Sources
+
+```{r}
+# Step 1: Join income and rent by state name
+merged_data <- income_final |>
+  left_join(rent_final, by = "NAME")
+
+# Step 2: Add CPI inflation factor as a constant column (it's national, not by state)
+merged_data$inflation_factor <- inflation_factor
+
+# Step 3: Add living wage data (table 1) by state name
+# Rename state_name in the living wage crosswalk to match "NAME" used in Census data
+living_wage_clean <- living_wage_table1 |>
+  rename(NAME = state_name)
+
+merged_data <- merged_data |>
+  left_join(living_wage_clean, by = "NAME")
+
+# Step 4: Adjust 2010 income and rent to 2024 dollars using inflation factor
+merged_data$income_2010_adj <- merged_data$income_2010 * merged_data$inflation_factor
+merged_data$rent_2010_adj   <- merged_data$rent_2010   * merged_data$inflation_factor
+
+# Step 5: Calculate affordability ratios (annual rent / annual income)
+# Rent is monthly, so multiply by 12 to annualize
+merged_data$afford_ratio_2010 <- (merged_data$rent_2010_adj * 12)  / merged_data$income_2010_adj
+merged_data$afford_ratio_2024 <- (merged_data$rent_2024 * 12)      / merged_data$income_2024
+
+# Step 6: Calculate change in affordability (positive = worse, negative = better)
+merged_data$afford_change <- merged_data$afford_ratio_2024 - merged_data$afford_ratio_2010
+
+# View the final merged dataset
+View(merged_data)
+```
+
+A few things to note:
+
+**The affordability ratio** is annual rent divided by income. A common rule of thumb is that households should spend no more than 30% of income on rent — so a ratio above 0.30 signals a cost burden. `afford_change` tells you directly whether each state got worse or better between 2010 and 2024.
+
+**`living_wage_table1`** needs to have a `state_name` column for the join to work, which it will since you added the crosswalk in Source 4. Just double-check the column names match by running `colnames(living_wage_table1)` and `colnames(income_final)` before running the merge.
+
+**This final `merged_data` is what you export to Tableau/Power BI.** You can save it with:
+
+```{r}
+write.csv(merged_data, "final_merged_data.csv", row.names = FALSE)
+```
+
