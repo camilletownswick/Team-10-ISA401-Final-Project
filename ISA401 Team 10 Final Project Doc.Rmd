@@ -98,6 +98,7 @@ inflation_factor <- cpi_final$cpi_2024 / cpi_final$cpi_2010
 cpi_final
 inflation_factor
 ```
+Prices in 2024 are about 1.438 times what they were in 2010. Something that cost $1.00 in 2010 would cost about $1.44 in 2024. So prices increased by about 43.8% from 2010 to 2024 based on your CPI calculation.
 
 
 ```{r}
@@ -109,7 +110,14 @@ ggplot(cpi_data, aes(x = date, y = price)) +
 ```
 
 
-The CPI trend shows that prices increased substantially between 2010 and 2024, with a sharp rise occurring after 2020. This supports the need to adjust earlier income and rent values for inflation before making affordability comparisons across years.
+
+```{r}
+income_2010_adjusted = income_2010 * inflation_factor
+rent_2010_adjusted = rent_2010 * inflation_factor
+```
+
+We are converting 2010 income and rent into 2024 dollars.
+
 
 ## Source 4: BLS OES Wage/Employment Data
 
