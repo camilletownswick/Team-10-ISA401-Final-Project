@@ -52,8 +52,6 @@ rent_final <- pivot_wider(rent_combined, id_cols = NAME, names_from = year, name
 ```
 
 
-
-
 ## Source 3: FRED CPI Data
 
 # Annie
@@ -111,54 +109,9 @@ ggplot(cpi_data, aes(x = date, y = price)) +
 ```
 
 
-
-
-
-
-
-
-
 The CPI trend shows that prices increased substantially between 2010 and 2024, with a sharp rise occurring after 2020. This supports the need to adjust earlier income and rent values for inflation before making affordability comparisons across years.
 
-## Source 4: MIT Living Wage Calculator
+## Source 4: BLS OES Wage/Employment Data
 
 # Cam
 
-<<<<<<< HEAD
-# Working on scraping all 50 states efficiently
-
-```{r}
-# Check if allowed to scrape
-robotstxt::paths_allowed(
-  paths= "/emp/",
-  domain = "https://livingwage.mit.edu"
-  )
-
-# Check specific webpage
-robotstxt::paths_allowed(
-  paths = "https://livingwage.mit.edu/states/01",
-)
-
-library(rvest)
-library(httr2)
-
-
-
-# step 1: read the page w/ a user-agent
-resp <- httr2::request("https://livingwage.mit.edu/states/01") |>
-  httr2::req_user_agent("An ISA 401 Student from Miami University") |>
-  httr2::req_perform()
-
-page <- resp |> httr2::resp_body_raw() |> rvest::read_html()
-
-
-# Pull all 3 tables at once
-all_tables <- page |>
-  rvest::html_elements("table") |>
-  rvest::html_table()
-
-# Inspect each one before building the loop
-View(all_tables[[1]])
-View(all_tables[[2]])
-View(all_tables[[3]])
-```
