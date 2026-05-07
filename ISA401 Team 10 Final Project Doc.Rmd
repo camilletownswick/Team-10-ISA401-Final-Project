@@ -116,8 +116,6 @@ ggplot(cpi_data, aes(x = date, y = price)) +
 
 
 
-
-
 The CPI trend shows that prices increased substantially between 2010 and 2024, with a sharp rise occurring after 2020. This supports the need to adjust earlier income and rent values for inflation before making affordability comparisons across years.
 
 ## Source 4: MIT Living Wage Calculator
@@ -128,37 +126,59 @@ The CPI trend shows that prices increased substantially between 2010 and 2024, w
 # Working on scraping all 50 states efficiently
 
 ```{r}
-# Check if allowed to scrape
-robotstxt::paths_allowed(
-  paths= "/emp/",
-  domain = "https://livingwage.mit.edu"
-  )
-
-# Check specific webpage
-robotstxt::paths_allowed(
-  paths = "https://livingwage.mit.edu/states/01",
-)
-
 library(rvest)
 library(httr2)
+library(tidyverse)
 
+# Check if allowed to scrape
+robotstxt::paths_allowed(paths = "https://livingwage.mit.edu/states/01")
 
+# All 50 state FIPS codes (zero-padded, skips territories/non-states)
+state_fips <- c("01","02","04","05","06","08","09","10","12","13",
+                "15","16","17","18","19","20","21","22","23","24",
+                "25","26","27","28","29","30","31","32","33","34",
+                "35","36","37","38","39","40","41","42","44","45",
+                "46","47","48","49","50","51","53","54","55","56")
 
-# step 1: read the page w/ a user-agent
-resp <- httr2::request("https://livingwage.mit.edu/states/01") |>
-  httr2::req_user_agent("An ISA 401 Student from Miami University") |>
-  httr2::req_perform()
+# Empty list to store results
+all_states_tables <- list()
 
-page <- resp |> httr2::resp_body_raw() |> rvest::read_html()
+for (fips in state_fips) {
+  
+  url <- paste0("https://livingwage.mit.edu/states/", fips)
+  
+  page <- httr2::request(url) |>
+    httr2::req_user_agent("An ISA 401 Student from Miami University") |>
+    httr2::req_throttle(rate = 10/60) |>
+    httr2::req_perform() |>
+    httr2::resp_body_raw() |>
+    rvest::read_html()
+  
+  tables <- page |>
+    rvest::html_elements("table") |>
+    rvest::html_table()
+  
+  tables <- lapply(tables, function(tbl) {
+    tbl$state_fips <- fips
+    tbl
+  })
+  
+  all_states_tables[[fips]] <- tables
+  
+  message("Done: ", fips)
+}
 
+# Stack each table across all 50 states into flat data frames
+living_wage_table1 <- map_dfr(all_states_tables, ~ .x[[1]])
+living_wage_table2 <- map_dfr(all_states_tables, ~ .x[[2]])
+living_wage_table3 <- map_dfr(all_states_tables, ~ .x[[3]])
 
-# Pull all 3 tables at once
-all_tables <- page |>
-  rvest::html_elements("table") |>
-  rvest::html_table()
+# Add readable state names
+state_xwalk <- tidycensus::fips_codes |>
+  distinct(state_code, state_name) |>
+  rename(state_fips = state_code)
 
-# Inspect each one before building the loop
-View(all_tables[[1]])
-View(all_tables[[2]])
-View(all_tables[[3]])
+living_wage_table1 <- living_wage_table1 |> left_join(state_xwalk, by = "state_fips")
+living_wage_table2 <- living_wage_table2 |> left_join(state_xwalk, by = "state_fips")
+living_wage_table3 <- living_wage_table3 |> left_join(state_xwalk, by = "state_fips")
 ```
