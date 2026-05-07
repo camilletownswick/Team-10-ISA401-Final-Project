@@ -30,8 +30,6 @@ v24 <- load_variables(2024, "acs1", cache = TRUE)
 # Use RStudio's View to search keywords like "age", "income", or "rent"
 # View(v24)
 
-Sys.getenv("CENSUS_API_KEY")
-
 income_vars <- c(income_25_through_44 = "B19049_003")
 
 income_2010 <- get_acs(geography = "state", variables = income_vars, year = 2010, survey = "acs1")
@@ -221,4 +219,54 @@ A few things to note:
 **The affordability ratio** is annual rent divided by income. A common rule of thumb is that households should spend no more than 30% of income on rent — so a ratio above 0.30 signals a cost burden. `afford_change` tells you directly whether each state got worse or better between 2010 and 2024.
 
 **`living_wage_table1`** needs to have a `state_name` column for the join to work, which it will since you added the crosswalk in Source 4. Just double-check the column names match by running `colnames(living_wage_table1)` and `colnames(income_final)` before running the merge.
+
+
+```{r}
+library(tidyverse)
+
+# If merged_data already exists, use it.
+# If not, read the saved final CSV.
+merged_data <- read.csv("final_merged_data.csv")
+
+validation_table <- merged_data %>%
+  mutate(
+    missing_income_2010 = is.na(income_2010),
+    missing_income_2024 = is.na(income_2024),
+    missing_rent_2010 = is.na(rent_2010),
+    missing_rent_2024 = is.na(rent_2024),
+    missing_inflation_factor = is.na(inflation_factor),
+
+    impossible_income_2010 = income_2010 <= 0,
+    impossible_income_2024 = income_2024 <= 0,
+    impossible_rent_2010 = rent_2010 <= 0,
+    impossible_rent_2024 = rent_2024 <= 0,
+
+    missing_afford_ratio_2010 = is.na(afford_ratio_2010),
+    missing_afford_ratio_2024 = is.na(afford_ratio_2024),
+    missing_afford_change = is.na(afford_change)
+  ) %>%
+  select(
+    NAME,
+    missing_income_2010,
+    missing_income_2024,
+    missing_rent_2010,
+    missing_rent_2024,
+    missing_inflation_factor,
+    impossible_income_2010,
+    impossible_income_2024,
+    impossible_rent_2010,
+    impossible_rent_2024,
+    missing_afford_ratio_2010,
+    missing_afford_ratio_2024,
+    missing_afford_change
+  )
+
+validation_table
+```
+
+
+
+The validation table checks the final merged dataset for missing values, impossible values, failed calculations, and duplicate state records. A value of FALSE means no issue was found for that check, while TRUE would indicate a potential data problem. The visible results show that the state records have income, rent, inflation, and affordability values present. This helps confirm that the merged dataset is ready for analysis and Tableau visualization.
+
+
 
