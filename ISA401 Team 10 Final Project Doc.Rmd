@@ -191,28 +191,30 @@ living_wage_table3 <- living_wage_table3 |> left_join(state_xwalk, by = "state_f
 merged_data <- income_final |>
   left_join(rent_final, by = "NAME")
 
-# Step 2: Add inflation factor as a constant column across all states
+# Step 2: Remove Puerto Rico
+merged_data <- merged_data |>
+  filter(NAME != "Puerto Rico")
+
+# Step 3: Add inflation factor as a constant column across all states
 merged_data$inflation_factor <- inflation_factor
 
-# Step 3: Adjust 2010 values to 2024 dollars
+# Step 4: Adjust 2010 values to 2024 dollars
 merged_data$income_2010_adj <- merged_data$income_2010 * inflation_factor
 merged_data$rent_2010_adj   <- merged_data$rent_2010   * inflation_factor
 
-# Step 4: Calculate affordability ratios (annual rent / annual income)
+# Step 5: Calculate affordability ratios (annual rent / annual income)
 merged_data$afford_ratio_2010 <- (merged_data$rent_2010_adj * 12) / merged_data$income_2010_adj
 merged_data$afford_ratio_2024 <- (merged_data$rent_2024 * 12)     / merged_data$income_2024
 
-# Step 5: How much did affordability change per state?
+# Step 6: Calculate affordability change per state
 merged_data$afford_change <- merged_data$afford_ratio_2024 - merged_data$afford_ratio_2010
 
+# Save and view
+write.csv(merged_data, "final_merged_data.csv", row.names = FALSE)
 View(merged_data)
 ```
 
-Once your living wage scraping is done you can add it later with one more `left_join`. For now this gives you a working merged dataset you can already start building Tableau visuals from. Save it with:
-
-```{r}
-write.csv(merged_data, "final_merged_data.csv", row.names = FALSE)
-```
+This is cleaner, logically ordered, and all in one chunk so there's no confusion about what runs when.
 
 A few things to note:
 
