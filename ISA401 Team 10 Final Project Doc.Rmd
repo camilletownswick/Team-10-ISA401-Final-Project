@@ -119,6 +119,8 @@ rent_2010_adjusted = rent_2010 * inflation_factor
 We are converting 2010 income and rent into 2024 dollars.
 
 
+
+
 ## Source 4: BLS OES Wage/Employment Data
 
 # Cam
