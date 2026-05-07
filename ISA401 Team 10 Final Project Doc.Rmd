@@ -202,9 +202,10 @@ merged_data$inflation_factor <- inflation_factor
 merged_data$income_2010_adj <- merged_data$income_2010 * inflation_factor
 merged_data$rent_2010_adj   <- merged_data$rent_2010   * inflation_factor
 
-# Step 5: Calculate affordability ratios (annual rent / annual income)
-merged_data$afford_ratio_2010 <- (merged_data$rent_2010_adj * 12) / merged_data$income_2010_adj
-merged_data$afford_ratio_2024 <- (merged_data$rent_2024 * 12)     / merged_data$income_2024
+# Step 5: Calculate affordability ratios using raw (unadjusted) values
+# Inflation adjustment cancels out in a ratio, so raw values give the correct comparison
+merged_data$afford_ratio_2010 <- (merged_data$rent_2010 * 12) / merged_data$income_2010
+merged_data$afford_ratio_2024 <- (merged_data$rent_2024 * 12) / merged_data$income_2024
 
 # Step 6: Calculate affordability change per state
 merged_data$afford_change <- merged_data$afford_ratio_2024 - merged_data$afford_ratio_2010
