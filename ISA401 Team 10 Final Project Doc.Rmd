@@ -11,10 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Source 1: Census ACS Income (25-44)
 
+
 # Sydney
 ```{r}
 library(tidycensus)
 library(tidyverse)
+
+Sys.getenv("CENSUS_API_KEY")
 
 # Load the list of all available variables for 2024
 v24 <- load_variables(2024, "acs1", cache = TRUE)
