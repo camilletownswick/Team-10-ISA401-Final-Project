@@ -121,7 +121,6 @@ ggplot(cpi_data, aes(x = date, y = price)) +
 
 
 
-
 ## Source 4: BLS OES Wage/Employment Data
 
 # Cam
@@ -222,6 +221,4 @@ A few things to note:
 **The affordability ratio** is annual rent divided by income. A common rule of thumb is that households should spend no more than 30% of income on rent — so a ratio above 0.30 signals a cost burden. `afford_change` tells you directly whether each state got worse or better between 2010 and 2024.
 
 **`living_wage_table1`** needs to have a `state_name` column for the join to work, which it will since you added the crosswalk in Source 4. Just double-check the column names match by running `colnames(living_wage_table1)` and `colnames(income_final)` before running the merge.
-
-**This final `merged_data` is what you export to Tableau/Power BI.** You can save it with:
 
