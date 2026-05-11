@@ -29,7 +29,7 @@
       <connection class='federated'>
         <named-connections>
           <named-connection caption='Clipboard_20260507T185040' name='Clipboard_20260507T185040leaf'>
-            <connection class='textscan' directory='Data/Datasources' filename='Clipboard_20260507T185040.txt' />
+            <connection class='textscan' directory='Data' filename='Clipboard_20260507T185040.txt' />
           </named-connection>
         </named-connections>
         <relation connection='Clipboard_20260507T185040leaf' name='Clipboard_20260507T185040#txt' table='[Clipboard_20260507T185040#txt]' type='table' />
@@ -54,7 +54,7 @@
       <connection class='federated'>
         <named-connections>
           <named-connection caption='merged_data' name='textscan.05jbg681p2b4qc0zmgw9o1enm6ry'>
-            <connection class='textscan' directory='Data/Team-10-ISA401-Final-Project' filename='merged_data.csv' password='' server='' />
+            <connection class='textscan' directory='Data 1' filename='merged_data.csv' password='' server='' />
           </named-connection>
         </named-connections>
         <relation connection='textscan.05jbg681p2b4qc0zmgw9o1enm6ry' name='merged_data.csv' table='[merged_data#csv]' type='table'>
@@ -697,7 +697,7 @@
       <connection class='federated'>
         <named-connections>
           <named-connection caption='merged_data' name='textscan.14qzrjb03uokcr1adiltj1z0l7lo'>
-            <connection class='textscan' directory='Data/Team-10-ISA401-Final-Project 1' filename='merged_data.csv' password='' server='' />
+            <connection class='textscan' directory='Data 2' filename='merged_data.csv' password='' server='' />
           </named-connection>
         </named-connections>
         <relation connection='textscan.14qzrjb03uokcr1adiltj1z0l7lo' name='merged_data.csv' table='[merged_data#csv]' type='table'>
@@ -1612,7 +1612,7 @@
       <simple-id uuid='{C3CAF0A1-0E36-41D2-BF3E-B236CB5997E7}' />
     </dashboard>
   </dashboards>
-  <windows pres-mode='true' source-height='93'>
+  <windows source-height='93'>
     <window class='dashboard' name='Introduction'>
       <viewpoints />
       <active id='3' />
@@ -1623,7 +1623,7 @@
       <active id='3' />
       <simple-id uuid='{E919F530-F0F7-44FD-AFEF-F4E7A0B7C712}' />
     </window>
-    <window class='dashboard' maximized='true' name='Housing Affordability by State'>
+    <window class='dashboard' name='Housing Affordability by State'>
       <viewpoints>
         <viewpoint name='Worst vs Best States' />
       </viewpoints>
@@ -1691,7 +1691,7 @@
       </viewpoint>
       <simple-id uuid='{D0CAC6B0-75BE-4CDB-A489-E23D9A83D2E3}' />
     </window>
-    <window class='dashboard' name='Conclusion'>
+    <window class='dashboard' maximized='true' name='Conclusion'>
       <viewpoints />
       <active id='13' />
       <simple-id uuid='{739BDC03-A256-44ED-9A41-5E322C4CBBA3}' />
